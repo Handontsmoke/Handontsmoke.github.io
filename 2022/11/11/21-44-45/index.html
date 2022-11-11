@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/icons/favicon-16x16.png?v=2.6.2" type="image/png" sizes="16x16"><link rel="icon" href="/images/icons/favicon-32x32.png?v=2.6.2" type="image/png" sizes="32x32"><meta name="description" content="American Fuzz Loop，各种fuzz工具的鼻祖">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AFL的安装与测试">
+<meta property="og:url" content="http://khmei.gitee.io/2022/11/11/21-44-45/index.html">
+<meta property="og:site_name" content="一千零一岁寒">
+<meta property="og:description" content="American Fuzz Loop，各种fuzz工具的鼻祖">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/11/11/GVoN5SELYvACfTd.png">
+<meta property="og:image" content="https://s2.loli.net/2022/11/11/ykFLXg2E7SjZM9b.png">
+<meta property="og:image" content="https://s2.loli.net/2022/11/11/4hflSNvwZgWYAFs.png">
+<meta property="og:image" content="https://s2.loli.net/2022/11/11/qgW81k6nl3UQ9vL.png">
+<meta property="og:image" content="https://s2.loli.net/2022/11/11/n8hKbgBkUoQXiN4.png">
+<meta property="article:published_time" content="2022-11-11T13:44:45.000Z">
+<meta property="article:modified_time" content="2022-11-11T14:46:49.632Z">
+<meta property="article:author" content="Kehan Mei">
+<meta property="article:tag" content="fuzz">
+<meta property="article:tag" content="工具">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/11/11/GVoN5SELYvACfTd.png"><title>AFL的安装与测试 | 一千零一岁寒</title><link ref="canonical" href="http://khmei.gitee.io/2022/11/11/21-44-45/"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.6.2"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  assistSearch: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
+  header: {"enable":true,"showOnPost":true,"scrollDownIcon":false},
+  postWidget: undefined,
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":true},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: undefined,
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.1.0"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner"><nav class="header-nav header-nav--fixed"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav><div class="header-banner"><div class="header-banner-info"><div class="header-banner-info__title">一千零一岁寒</div><div class="header-banner-info__subtitle">万人如海一身藏</div></div></div></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">AFL的安装与测试</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-11-11</span></span><span class="post-meta-item post-meta-item--wordcount"><span class="post-meta-item__icon"><i class="far fa-file-word"></i></span><span class="post-meta-item__info">字数统计</span><span class="post-meta-item__value">762</span></span><span class="post-meta-item post-meta-item--readtime"><span class="post-meta-item__icon"><i class="far fa-clock"></i></span><span class="post-meta-item__info">阅读时长</span><span class="post-meta-item__value">5分</span></span></div></header><div class="post-body">
+        <h3 id="1afl的安装"   >
+          <a href="#1afl的安装" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#1afl的安装"></a> 1.AFL的安装</h3>
+      
+<p>先安装gcc，我的虚拟机还没装。</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//先安装gcc </span><br><span class="line">sudo apt-get install gcc</span><br><span class="line">//查看gcc版本看是否安装成功</span><br><span class="line">gcc -v</span><br></pre></td></tr></table></div></figure>
+<p>之后发现还需要clang和llvm，要啥装啥吧。</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install clang</span><br><span class="line">sudo apt-get install llvm</span><br></pre></td></tr></table></div></figure>
+<p>下载AFL，开始愉快地安装，很快啊。</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/google/AFL</span><br><span class="line">cd AFL</span><br><span class="line">make</span><br><span class="line">//如果显示make command not found 运行下面两条命令</span><br><span class="line">apt install make</span><br><span class="line">apt upgrade</span><br></pre></td></tr></table></div></figure>
+
+        <h3 id="2afl测试"   >
+          <a href="#2afl测试" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#2afl测试"></a> 2.AFL测试</h3>
+      
+<p>我根据网上的教程，直接输入<code>afl -fuzz</code> 显示找不到afl命令，那就直接测试一个具体的文件试试。</p>
+<p>创建一个testfile文件夹，然后在该文件夹下创建测试文件afl_test.c，内容如下：</p>
+<figure class="highlight c"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span> </span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">vuln</span><span class="params">(<span class="type">char</span> *str)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> len = <span class="built_in">strlen</span>(str);</span><br><span class="line">    <span class="keyword">if</span>(str[<span class="number">0</span>] == <span class="string">&#x27;A&#x27;</span> &amp;&amp; len == <span class="number">66</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        raise(SIGSEGV);</span><br><span class="line">        <span class="comment">//如果输入的字符串的首字符为A并且长度为66，则异常退出</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(str[<span class="number">0</span>] == <span class="string">&#x27;F&#x27;</span> &amp;&amp; len == <span class="number">6</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        raise(SIGSEGV);</span><br><span class="line">        <span class="comment">//如果输入的字符串的首字符为F并且长度为6，则异常退出</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;it is good!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> buf[<span class="number">100</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">    gets(buf);<span class="comment">//存在栈溢出漏洞</span></span><br><span class="line">    <span class="built_in">printf</span>(buf);<span class="comment">//存在格式化字符串漏洞</span></span><br><span class="line">    vuln(buf);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></div></figure>
+<p>敲命令</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-gcc -g -o afl_test test.c</span><br></pre></td></tr></table></div></figure>
+<p>显示如下</p>
+<p><img src="https://s2.loli.net/2022/11/11/GVoN5SELYvACfTd.png" alt="image-20221013210725121" /></p>
+<p>于是我又试了命令<code>apt install afl</code></p>
+<p>重新尝试，</p>
+<p><img src="https://s2.loli.net/2022/11/11/ykFLXg2E7SjZM9b.png" alt="image-20221013211737042" /></p>
+<p>接着建立fuzz_in文件夹，创建输入文件testcase，输入文件中写几个简单单词，fuzzing时会产生简单变异。</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir fuzz_in</span><br><span class="line">echo &quot;hello&quot; &gt; fuzz_in/testcase</span><br></pre></td></tr></table></div></figure>
+<p>进行fuzz，结果如图。</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-fuzz -i fuzz_in -o output ./afl_test</span><br></pre></td></tr></table></div></figure>
+<p><img src="https://s2.loli.net/2022/11/11/4hflSNvwZgWYAFs.png" alt="image-20221013212507389" /></p>
+
+        <h3 id="3基于编译器的目标程序插桩"   >
+          <a href="#3基于编译器的目标程序插桩" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#3基于编译器的目标程序插桩"></a> 3.基于编译器的目标程序插桩</h3>
+      
+
+        <h4 id="31下载目标程序集coreutils-91targz"   >
+          <a href="#31下载目标程序集coreutils-91targz" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#31下载目标程序集coreutils-91targz"></a> 3.1下载目标程序集(coreutils-9.1.tar.gz)</h4>
+      
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://ftp.gnu.org/gnu/coreutils/coreutils-9.1.tar.gz</span><br><span class="line">tar -zxvf coreutils-9.1.tar.gz</span><br></pre></td></tr></table></div></figure>
+
+        <h4 id="32使用afl-gcc生成coreutils的每个二进制程序"   >
+          <a href="#32使用afl-gcc生成coreutils的每个二进制程序" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#32使用afl-gcc生成coreutils的每个二进制程序"></a> 3.2使用afl-gcc，生成coreutils的每个二进制程序</h4>
+      
+<ul>
+<li>
+<p>查看 coreutils 的 configure 选项，指定 <code>cc=afl-gcc</code>。</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure CC=afl-gcc</span><br></pre></td></tr></table></div></figure>
+<p>这一步用来生成Makefile，为了下一步编译做准备，可以通过在configure后面加参数进行控制。</p>
+<p>可以通过 <code>./configure --help</code>查看帮助</p>
+<p><strong>问题</strong></p>
+<p><img src="https://s2.loli.net/2022/11/11/qgW81k6nl3UQ9vL.png" alt="image-20221014112413555" /></p>
+<p>通过百度找到<span class="exturl"><a class="exturl__link"   target="_blank" rel="noopener" href="https://blog.csdn.net/tx422/article/details/78593860?spm=1001.2101.3001.6650.1&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-78593860-blog-115320610.pc_relevant_aa&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-78593860-blog-115320610.pc_relevant_aa&amp;utm_relevant_index=2" >解决方案</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export FORCE_UNSAFE_CONFIGURE=1</span><br></pre></td></tr></table></div></figure>
+<ul>
+<li></li>
+</ul>
+</li>
+<li>
+<p>生成 coreutils 二进制程序集。make 出来的每一个插桩后二进制均在 coreutils-9.1/src 目录下</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></div></figure>
+</li>
+</ul>
+
+        <h4 id="33为-coreutils-的特定程序确定输入种子"   >
+          <a href="#33为-coreutils-的特定程序确定输入种子" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#33为-coreutils-的特定程序确定输入种子"></a> 3.3为 coreutils 的特定程序确定输入种子</h4>
+      
+<p>coreutils 包含很多二进制程序，任选其中程序进行 fuzzing。</p>
+<p>构造输入种子列表，存放于coreutils-9.1/src/input 目录下，构造方法可以选择：</p>
+<ul>
+<li>
+<p>学习 coreutils <span class="exturl"><a class="exturl__link"   target="_blank" rel="noopener" href="https://www.gnu.org/software/coreutils/manual/coreutils.html" >文档</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span>中这 3 个程序的命令行选项，用这些命令行选项构建</p>
+</li>
+<li>
+<p>直接用随机构造的任意字符串作为输入种子。</p>
+<figure class="highlight plaintext"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir input</span><br><span class="line">mkdir output</span><br><span class="line">cp ../../AFL/dictionaries/* ./input # 将字典拷贝到input目录下</span><br></pre></td></tr></table></div></figure>
+</li>
+</ul>
+
+        <h4 id="34在coreutils-91src-目录下使用-afl-fuzz-i-input-o-output-程序名-进行fuzzing一段时间后终止fuzzing-并在-coreutils-91srcoutput-目录下查看测试结果"   >
+          <a href="#34在coreutils-91src-目录下使用-afl-fuzz-i-input-o-output-程序名-进行fuzzing一段时间后终止fuzzing-并在-coreutils-91srcoutput-目录下查看测试结果" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#34在coreutils-91src-目录下使用-afl-fuzz-i-input-o-output-程序名-进行fuzzing一段时间后终止fuzzing-并在-coreutils-91srcoutput-目录下查看测试结果"></a> 3.4在coreutils-9.1/src 目录下，使用 <code>afl-fuzz -i input -o output ./[程序名] @@</code>进行fuzzing，一段时间后终止fuzzing 并在 <code>coreutils-9.1/src/output</code> 目录下查看测试结果。</h4>
+      
+<p><img src="https://s2.loli.net/2022/11/11/n8hKbgBkUoQXiN4.png" alt="image-20221014113912837" /></p>
+</div><footer class="post-footer"><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://khmei.gitee.io/tags/fuzz/">fuzz</a></span><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://khmei.gitee.io/tags/%E5%B7%A5%E5%85%B7/">工具</a></span></div><nav class="post-paginator paginator"><div class="paginator-next"><a class="paginator-next__link" href="/2022/10/27/22-01-46/"><span class="paginator-prev__text">【文献】eTPL</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div><div class="comments" id="comments"><div id="valine-container"></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1afl%E7%9A%84%E5%AE%89%E8%A3%85"><span class="toc-number">1.</span> <span class="toc-text">
+           1.AFL的安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2afl%E6%B5%8B%E8%AF%95"><span class="toc-number">2.</span> <span class="toc-text">
+           2.AFL测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E5%9F%BA%E4%BA%8E%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%9B%AE%E6%A0%87%E7%A8%8B%E5%BA%8F%E6%8F%92%E6%A1%A9"><span class="toc-number">3.</span> <span class="toc-text">
+           3.基于编译器的目标程序插桩</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#31%E4%B8%8B%E8%BD%BD%E7%9B%AE%E6%A0%87%E7%A8%8B%E5%BA%8F%E9%9B%86coreutils-91targz"><span class="toc-number">3.1.</span> <span class="toc-text">
+           3.1下载目标程序集(coreutils-9.1.tar.gz)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#32%E4%BD%BF%E7%94%A8afl-gcc%E7%94%9F%E6%88%90coreutils%E7%9A%84%E6%AF%8F%E4%B8%AA%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%A8%8B%E5%BA%8F"><span class="toc-number">3.2.</span> <span class="toc-text">
+           3.2使用afl-gcc，生成coreutils的每个二进制程序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#33%E4%B8%BA-coreutils-%E7%9A%84%E7%89%B9%E5%AE%9A%E7%A8%8B%E5%BA%8F%E7%A1%AE%E5%AE%9A%E8%BE%93%E5%85%A5%E7%A7%8D%E5%AD%90"><span class="toc-number">3.3.</span> <span class="toc-text">
+           3.3为 coreutils 的特定程序确定输入种子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#34%E5%9C%A8coreutils-91src-%E7%9B%AE%E5%BD%95%E4%B8%8B%E4%BD%BF%E7%94%A8-afl-fuzz-i-input-o-output-%E7%A8%8B%E5%BA%8F%E5%90%8D-%E8%BF%9B%E8%A1%8Cfuzzing%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%90%8E%E7%BB%88%E6%AD%A2fuzzing-%E5%B9%B6%E5%9C%A8-coreutils-91srcoutput-%E7%9B%AE%E5%BD%95%E4%B8%8B%E6%9F%A5%E7%9C%8B%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="toc-number">3.4.</span> <span class="toc-text">
+           3.4在coreutils-9.1&#x2F;src 目录下，使用 afl-fuzz -i input -o output .&#x2F;[程序名] @@进行fuzzing，一段时间后终止fuzzing 并在 coreutils-9.1&#x2F;src&#x2F;output 目录下查看测试结果。</span></a></li></ol></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/assets/4.jpg" alt="avatar"></div><p class="sidebar-ov-author__text">没空忧伤</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="mkh20001101" target="_blank" rel="noopener" data-popover="微信" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-weixin"></i></span></a><a class="sidebar-ov-social-item" href="1574015012" target="_blank" rel="noopener" data-popover="QQ" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-qq"></i></span></a></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">7</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">3</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">6</div><div class="sidebar-ov-state-item__name">标签</div></a></div><div class="sidebar-ov-cc"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener" data-popover="知识共享许可协议" data-popover-pos="up"><img src="/images/cc-by-nc-sa.svg"></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span><span class="sidebar-reading-info__perc">%</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2022</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>Kehan Mei</span></div><div>万人如海一身藏</div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css"><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.min.js"></script><script src="https://cdn.jsdelivr.net/npm/leancloud-storage@latest/dist/av-min.js"></script><script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script><script>function loadValine () {
+  var GUEST_INFO = ['nick', 'mail', 'link'];
+  var guest_info = 'nick,mail,link';
+
+  guest_info = guest_info.split(',').filter(function(item) {
+    return GUEST_INFO.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#valine-container',
+    appId: 'A2wTlqddyPxWcJKdOriqAlCO-gzGzoHsz',
+    appKey: 'k4mfRWX4hRuoZaQVYYmpbxok',
+    notify: true,
+    verify: false,
+    placeholder: '快来和我聊聊吧！
+昵称为必填项目
+虽然email不是必填，但是填了可以收到推送通知哦！',
+    avatar: 'mp',
+    meta: guest_info,
+    pageSize: '10' || 10,
+    visitor: false,
+    recordIP: false,
+    lang: '' || 'zh-cn',
+    path: window.location.pathname
+  });
+}
+
+if (false) {
+  loadValine();
+} else {
+  window.addEventListener('DOMContentLoaded', loadValine, false);
+}</script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script></body></html>

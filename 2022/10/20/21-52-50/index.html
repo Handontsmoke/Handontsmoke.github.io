@@ -1,0 +1,154 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/icons/favicon-16x16.png?v=2.6.2" type="image/png" sizes="16x16"><link rel="icon" href="/images/icons/favicon-32x32.png?v=2.6.2" type="image/png" sizes="32x32"><meta name="description" content="看了几篇综述后的小总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="模糊测试小总结">
+<meta property="og:url" content="http://khmei.gitee.io/2022/10/20/21-52-50/index.html">
+<meta property="og:site_name" content="一千零一岁寒">
+<meta property="og:description" content="看了几篇综述后的小总结">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-20T13:52:50.000Z">
+<meta property="article:modified_time" content="2022-11-11T13:54:39.244Z">
+<meta property="article:author" content="Kehan Mei">
+<meta property="article:tag" content="fuzz">
+<meta name="twitter:card" content="summary"><title>模糊测试小总结 | 一千零一岁寒</title><link ref="canonical" href="http://khmei.gitee.io/2022/10/20/21-52-50/"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.6.2"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  assistSearch: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
+  header: {"enable":true,"showOnPost":true,"scrollDownIcon":false},
+  postWidget: undefined,
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":true},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: undefined,
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.1.0"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner"><nav class="header-nav header-nav--fixed"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav><div class="header-banner"><div class="header-banner-info"><div class="header-banner-info__title">一千零一岁寒</div><div class="header-banner-info__subtitle">万人如海一身藏</div></div></div></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">模糊测试小总结</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-10-20</span></span><span class="post-meta-item post-meta-item--wordcount"><span class="post-meta-item__icon"><i class="far fa-file-word"></i></span><span class="post-meta-item__info">字数统计</span><span class="post-meta-item__value">1.6k</span></span><span class="post-meta-item post-meta-item--readtime"><span class="post-meta-item__icon"><i class="far fa-clock"></i></span><span class="post-meta-item__info">阅读时长</span><span class="post-meta-item__value">8分</span></span></div></header><div class="post-body"><p>模糊测试基本流程：预处理、输入数据构造、输入选择、评估、结果分析。</p>
+<p>根据模糊测试对程序内部信息分析的程度,现代的模糊测试方法可以划分为３类:黑盒模糊测试、灰盒模糊测试和白盒模糊测试。</p>
+<p>AFL是覆盖率为导向的模糊测试工具，通过插桩的方法,采集输入数据对应的<strong>边覆盖率</strong>,作为模糊测试种子选取的衡量指标．通过使用进化算法以及精心构造的突变策略。</p>
+<p>通过对源码进行重新编译时进行插桩（简称编译时插桩）的方式利用自动产生测试用例来探索二进制程序内部新的执行路径。AFL也支持直接对没有源码的二进制程序进行测试，但需要QEMU的支持。它可以：</p>
+<ul>
+<li>其可以高效地对二进制程序进行fuzzing，挖掘可能存在的内存安全漏洞，如栈溢出、堆溢出、UAF、double free等。</li>
+<li>由于需要在相关代码处插桩，因此AFL主要用于对开源软件进行测试。</li>
+<li>配合QEMU等工具，也可对闭源二进制代码进行fuzzing，但执行效率会受到影响。</li>
+</ul>
+
+        <h3 id="1预处理"   >
+          <a href="#1预处理" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#1预处理"></a> 1.预处理</h3>
+      
+<p>工作:搜集目标相关信息并制定模糊测试的策略, 为监控目标在测试中的运行状态做必要的准备．通常依赖于<strong>插桩、符号执行以及污点分析</strong>这类程序分析技术</p>
+<p>搜集目标相关信息,比如目标的输入数据格式、目标的内部结构,并为监控测试中目标的状态变化做必要的准备．</p>
+<p>该环节面临的挑战是:使用什么程序分析技术,以及模糊测试究竟需要对目标内部信息有多详细的了解。</p>
+
+        <h4 id="11插桩"   >
+          <a href="#11插桩" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#11插桩"></a> 1.1插桩</h4>
+      
+<p>插桩技术通向目标代码中合适的位置添加预设好的代码。获得程序的静态或动态执行信息，比如程序的抽象语法树，覆盖率以及函数内变量取值等。</p>
+<p><strong>动态插桩</strong></p>
+<p>是指在运行过程中对代码插桩。比如利用QEMU等模拟技术，可以获得程序运行时的信息，缺点是资源开销大。</p>
+<p><strong>静态插桩</strong></p>
+<p>通过gcc编译器在汇编语言上插桩，LLVM在生成中间语言LLVMIR(low level virtual machine intermediate representation)上插桩。优点是节省时间、速度快，缺点是依赖于程序源码。</p>
+
+        <h4 id="12符号执行"   >
+          <a href="#12符号执行" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#12符号执行"></a> 1.2符号执行</h4>
+      
+<p>将程序行为归结为逻辑领域的推理，通过构建一个表示程序执行的逻辑公式，可以同时推断一个程序在不同输入上的行为。该方法可以使模糊测试获得较好的覆盖率，并可以深入到程序深处。</p>
+<p><strong>静态程序执行</strong></p>
+<p>容易陷入路径爆炸中，用得不多。</p>
+<p><strong>动态符号执行</strong></p>
+<p>动态符号执行通过对程序进行实际执行与符号化执行，维护程序的实际执行和符号化状态，<strong>通过将难以求解的约束替换为实际值，缓解了符号执行的问题</strong>，并按照<strong>深度优先</strong>的搜索策略对目标程序进行了探索。（有点抽象）</p>
+<p>存在的问题：</p>
+<ul>
+<li>路径爆炸问题依然存在，解决办法可以通过启发式算法，选择比较重要的路径探索。</li>
+<li>虽然动态符号执行使用实际值替换的方法，解决了一部分静态符号执行无法绕过的约束，但是也丢失了一部分路径，造成探索结果是不完整的。</li>
+<li>所有符号执行技术都受限于约束求解方法的能力。</li>
+</ul>
+
+        <h4 id="13污点分析"   >
+          <a href="#13污点分析" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#13污点分析"></a> 1.3污点分析</h4>
+      
+<p>观察程序中，哪些数据收到了预先准备好的污染源的污染，目的是跟踪污染源和汇聚点之间的信息流。</p>
+<p><strong>静态污点分析</strong></p>
+<p>通过对程序静态分析,获得程序控制流图、抽象语法树等信息, 依据数据流以及依赖关系进行污点分析。</p>
+<p><strong>动态污点分析</strong></p>
+<p>动态污点分析检测的可信度更高,但是检测结果是否全面, 取决于动态污点分析对程序的覆盖情况,而且动态污点分析会消耗更多的资源; 静态污点分析又会和符号执行一样,可能会陷入到路径爆炸中,而简化后的静态污点分析又存在着严重的过度污染问题。</p>
+
+        <h3 id="2输入构造"   >
+          <a href="#2输入构造" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#2输入构造"></a> 2.输入构造</h3>
+      
+<p><strong>种子获取、种子筛选、种子突变</strong></p>
+<p>具体的挑战是如何在尽量满足语法语义检查的情况下，短时间内生成大量的输入，用以对目标做全面而深入的分析。</p>
+<p>首先得到一个数据S，然后S按照一定的策略进行一定次数的变异，获得大量新数据I，最后将I输入到被测试对象中进行测试，其中数据S被称为种子seed，I是测试实际使用的输入数据。</p>
+
+        <h3 id="3评估"   >
+          <a href="#3评估" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#3评估"></a> 3.评估</h3>
+      
+<p>现阶段的研究聚焦于模糊测试器在2个指标上的表现：<strong>覆盖率</strong>和<strong>暴露漏洞平均时间</strong>。</p>
+<p><strong>覆盖率</strong></p>
+<p>软件测试中的一个衡量指标,指的是在测试过程中,对象被覆盖到的数目占总数的比例． 通常而言,高覆盖率更可能发现更多的隐藏漏洞,众多研究因此集中在覆盖率提升上。</p>
+<ul>
+<li>
+<p>AFL 使用上下文无关的<strong>边覆盖率</strong>作为评估指标。</p>
+</li>
+<li>
+<p>Angora 使用上下文敏感的分支覆盖率。</p>
+</li>
+<li>
+<p>VUzzer 使用了块覆盖率替代边覆盖率作为覆盖率评估的对象。</p>
+</li>
+</ul>
+<p><strong>暴露漏洞平均时间</strong></p>
+<p>在 与 基 准 模 糊 工 具AFL的对比实验中，AFLGo复现单个漏洞的时间远比AFL少，这证明了该评估指标的有效性。此后Hawakeye同样使用了这一指标来证明其性能。Parmesan 在通过sanitizer来发现潜在漏洞的研究工作中，也是用暴露漏洞平均时间作为评估指 标同Angora等定向灰盒模糊工具进行比较。</p>
+
+        <h3 id="4结果分析"   >
+          <a href="#4结果分析" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#4结果分析"></a> 4.结果分析</h3>
+      
+<p>发生在模糊测试之后，主要目的是对于模糊测试的输出信息进行分析和处理。</p>
+</div><footer class="post-footer"><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://khmei.gitee.io/tags/fuzz/">fuzz</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/2022/10/27/21-56-24/"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">【文献】tls-differ-testing</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/2022/10/18/21-49-12/"><span class="paginator-prev__text">docker的学习</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div><div class="comments" id="comments"><div id="valine-container"></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">
+           1.预处理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#11%E6%8F%92%E6%A1%A9"><span class="toc-number">1.1.</span> <span class="toc-text">
+           1.1插桩</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#12%E7%AC%A6%E5%8F%B7%E6%89%A7%E8%A1%8C"><span class="toc-number">1.2.</span> <span class="toc-text">
+           1.2符号执行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#13%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90"><span class="toc-number">1.3.</span> <span class="toc-text">
+           1.3污点分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E8%BE%93%E5%85%A5%E6%9E%84%E9%80%A0"><span class="toc-number">2.</span> <span class="toc-text">
+           2.输入构造</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E8%AF%84%E4%BC%B0"><span class="toc-number">3.</span> <span class="toc-text">
+           3.评估</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90"><span class="toc-number">4.</span> <span class="toc-text">
+           4.结果分析</span></a></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/assets/4.jpg" alt="avatar"></div><p class="sidebar-ov-author__text">没空忧伤</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="mkh20001101" target="_blank" rel="noopener" data-popover="微信" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-weixin"></i></span></a><a class="sidebar-ov-social-item" href="1574015012" target="_blank" rel="noopener" data-popover="QQ" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-qq"></i></span></a></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">7</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">3</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">6</div><div class="sidebar-ov-state-item__name">标签</div></a></div><div class="sidebar-ov-cc"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener" data-popover="知识共享许可协议" data-popover-pos="up"><img src="/images/cc-by-nc-sa.svg"></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span><span class="sidebar-reading-info__perc">%</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2022</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>Kehan Mei</span></div><div>万人如海一身藏</div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css"><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.min.js"></script><script src="https://cdn.jsdelivr.net/npm/leancloud-storage@latest/dist/av-min.js"></script><script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script><script>function loadValine () {
+  var GUEST_INFO = ['nick', 'mail', 'link'];
+  var guest_info = 'nick,mail,link';
+
+  guest_info = guest_info.split(',').filter(function(item) {
+    return GUEST_INFO.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#valine-container',
+    appId: 'A2wTlqddyPxWcJKdOriqAlCO-gzGzoHsz',
+    appKey: 'k4mfRWX4hRuoZaQVYYmpbxok',
+    notify: true,
+    verify: false,
+    placeholder: '快来和我聊聊吧！
+昵称为必填项目
+虽然email不是必填，但是填了可以收到推送通知哦！',
+    avatar: 'mp',
+    meta: guest_info,
+    pageSize: '10' || 10,
+    visitor: false,
+    recordIP: false,
+    lang: '' || 'zh-cn',
+    path: window.location.pathname
+  });
+}
+
+if (false) {
+  loadValine();
+} else {
+  window.addEventListener('DOMContentLoaded', loadValine, false);
+}</script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script></body></html>
