@@ -1,0 +1,176 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/icons/favicon-16x16.png?v=2.6.2" type="image/png" sizes="16x16"><link rel="icon" href="/images/icons/favicon-32x32.png?v=2.6.2" type="image/png" sizes="32x32"><meta name="description" content="学习可变参数与void*使用。两者结合让函数更加灵活">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C&#x2F;C++|可变参数与void指针">
+<meta property="og:url" content="http://khmei.gitee.io/2022/11/30/11-31-29/index.html">
+<meta property="og:site_name" content="一千零一岁寒">
+<meta property="og:description" content="学习可变参数与void*使用。两者结合让函数更加灵活">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-11-30T03:31:29.000Z">
+<meta property="article:modified_time" content="2022-11-30T03:33:51.610Z">
+<meta property="article:author" content="Kehan Mei">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary"><title>C/C++|可变参数与void指针 | 一千零一岁寒</title><link ref="canonical" href="http://khmei.gitee.io/2022/11/30/11-31-29/"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.6.2"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  assistSearch: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
+  header: {"enable":true,"showOnPost":true,"scrollDownIcon":false},
+  postWidget: undefined,
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":true},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: {"avoidBanner":true},
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.1.0"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner"><nav class="header-nav header-nav--fixed"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav><div class="header-banner"><div class="header-banner-info"><div class="header-banner-info__title">一千零一岁寒</div><div class="header-banner-info__subtitle">万人如海一身藏</div></div></div></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">C/C++|可变参数与void指针</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-11-30</span></span><span class="post-meta-item post-meta-item--wordcount"><span class="post-meta-item__icon"><i class="far fa-file-word"></i></span><span class="post-meta-item__info">字数统计</span><span class="post-meta-item__value">634</span></span><span class="post-meta-item post-meta-item--readtime"><span class="post-meta-item__icon"><i class="far fa-clock"></i></span><span class="post-meta-item__info">阅读时长</span><span class="post-meta-item__value">4分</span></span></div></header><div class="post-body">
+        <h2 id="可变参数"   >
+          <a href="#可变参数" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#可变参数"></a> 可变参数</h2>
+      
+<p>可变参数是指函数的参数的数据类型和数量都是不固定的。</p>
+<p>例如<code>printf()</code>函数的参数就是可变的。这个函数的原型是：<code>int printf(const char *format,...)</code></p>
+
+        <h2 id="实现"   >
+          <a href="#实现" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#实现"></a> 实现</h2>
+      
+<figure class="highlight c"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdarg.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">int</span> count, ...)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello I am foo\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    va_list parameters;<span class="comment">//va_list变量</span></span><br><span class="line">    va_start(parameters,count);<span class="comment">//初始化,count是形参个数</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;count;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">void</span>* parameter = va_arg(parameters,<span class="type">void</span>*);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%p\n&quot;</span>,(<span class="type">int</span>*)parameter);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    va_end(parameters);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></div></figure>
+<ul>
+<li><strong>定义</strong></li>
+</ul>
+<p>一个函数，最后一个参数为省略号，省略号前面可以设置自定义参数。</p>
+<ul>
+<li><code>va_list </code></li>
+</ul>
+<p>在函数定义中创建一个 <code>va_list </code>类型变量，该类型是在 <code>stdarg.h </code>头文件中定义的。它包含了参数信息，这种类型的对象也被称为<strong>参数指针</strong>。它包含了栈中至少一个参数的位置，可以使用它从一个可选参数到下一个。</p>
+<ul>
+<li><code> va_start</code></li>
+</ul>
+<p>使用 int 参数和<code> va_start</code> 宏来初始化 <code>va_list</code> 变量为一个参数列表。宏 <code>va_start</code> 是在<code>stdarg.h</code>头文件中定义的。宏 <code>va_start</code> 使用第一个可选参数的位置来初始化 <code>va_list</code> 参数指针。该宏的第二个参数必须是该函数最后一个有名称参数的名称。必须先调用该宏，才可以开始使用可选参数。</p>
+<figure class="highlight c"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">va_start</span><span class="params">(va_list argptr, lastparam)</span>;</span><br></pre></td></tr></table></div></figure>
+<ul>
+<li><code>va_arg</code></li>
+</ul>
+<p>使用 <code>va_arg</code> 宏和<code>va_list</code>变量来访问参数列表中的每个项。展开宏 <code>va_arg</code> 会得到当前参数指针所引用的可选参数，也会将参数指针移动到列表中的下一个参数。宏 <code>va_arg</code> 的第二个参数是刚刚被读入的参数的类型。</p>
+<figure class="highlight c"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">type <span class="title function_">va_arg</span><span class="params">(va_list argptr, type)</span>;</span><br></pre></td></tr></table></div></figure>
+<ul>
+<li><code>va_end</code></li>
+</ul>
+<p>使用宏 <code>va_end</code> 来清理赋予 <code>va_list</code> 变量的内存。当不再需要使用参数指针时，必须调用宏 <code>va_end</code>。如果想使用宏 <code>va_start</code> 或者宏 <code>va_copy</code> 来重新初始化一个之前用过的参数指针，也必须先调用宏 <code>va_end</code>。</p>
+<figure class="highlight c"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">va_end</span><span class="params">(va_list argptr)</span>;</span><br></pre></td></tr></table></div></figure>
+
+        <h2 id="void"   >
+          <a href="#void" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#void"></a> void*</h2>
+      
+<p><code>void</code>被翻译为“无类型”，相应的<code>void*</code>为“无类型指针”。</p>
+<p><code>void*</code>指针变量可以指向任意变量的内存空间，任意类型指针变量都可以转换为<code>void*</code></p>
+<figure class="highlight c"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> num = <span class="number">10</span>;</span><br><span class="line"><span class="type">void</span>* p = &amp;num;</span><br><span class="line"><span class="type">int</span>* p_num = &amp;num;</span><br><span class="line"><span class="type">void</span>* p1 = p_num;</span><br></pre></td></tr></table></div></figure>
+<p>对于<code>void*</code>指针变量，不要解除引用操作，如果想通过指针变量p获取num的值，需要强制类型转换</p>
+<figure class="highlight c++"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span>* p_num = (<span class="type">int</span>*)p;</span><br><span class="line">cout&lt;&lt; *p &lt;&lt;endl;</span><br></pre></td></tr></table></div></figure>
+</div><footer class="post-footer"><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://khmei.gitee.io/tags/C-C/">C/C++</a></span></div><nav class="post-paginator paginator"><div class="paginator-next"><a class="paginator-next__link" href="/2022/11/27/17-51-32/"><span class="paginator-prev__text">杂谈|人生的必经之路？</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div><div class="comments" id="comments"><div id="valine-container"></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0"><span class="toc-number">1.</span> <span class="toc-text">
+           可变参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">
+           实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#void"><span class="toc-number">3.</span> <span class="toc-text">
+           void*</span></a></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/assets/4.jpg" alt="avatar"></div><p class="sidebar-ov-author__text">没空忧伤</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="mkh20001101" target="_blank" rel="noopener" data-popover="微信" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-weixin"></i></span></a><a class="sidebar-ov-social-item" href="1574015012" target="_blank" rel="noopener" data-popover="QQ" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-qq"></i></span></a></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">13</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">6</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">11</div><div class="sidebar-ov-state-item__name">标签</div></a></div><div class="sidebar-ov-cc"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener" data-popover="知识共享许可协议" data-popover-pos="up"><img src="/images/cc-by-nc-sa.svg"></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span><span class="sidebar-reading-info__perc">%</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2022</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>Kehan Mei</span></div><div>万人如海一身藏</div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@latest/pjax.min.js"></script><script>window.addEventListener('DOMContentLoaded', function () {
+  var pjax = new Pjax({"selectors":["head title","#main",".pjax-reload"],"history":true,"scrollTo":false,"scrollRestoration":false,"cacheBust":false,"debug":false,"currentUrlFullReload":false,"timeout":0});
+  // 加载进度条的计时器
+  var loadingTimer = null;
+
+  // 重置页面 Y 方向上的滚动偏移量
+  document.addEventListener('pjax:send', function () {
+    $('.header-nav-menu').removeClass('show');
+    if (CONFIG.pjax && CONFIG.pjax.avoidBanner) {
+      $('html').velocity('scroll', {
+        duration: 500,
+        offset: $('#header').height(),
+        easing: 'easeInOutCubic'
+      });
+    }
+
+    var loadingBarWidth = 20;
+    var MAX_LOADING_WIDTH = 95;
+
+    $('.loading-bar').addClass('loading');
+    $('.loading-bar__progress').css('width', loadingBarWidth + '%');
+    clearInterval(loadingTimer);
+    loadingTimer = setInterval(function () {
+      loadingBarWidth += 3;
+      if (loadingBarWidth > MAX_LOADING_WIDTH) {
+        loadingBarWidth = MAX_LOADING_WIDTH;
+      }
+      $('.loading-bar__progress').css('width', loadingBarWidth + '%');
+    }, 500);
+  }, false);
+
+  window.addEventListener('pjax:complete', function () {
+    clearInterval(loadingTimer);
+    $('.loading-bar__progress').css('width', '100%');
+    $('.loading-bar').removeClass('loading');
+    setTimeout(function () {
+      $('.loading-bar__progress').css('width', '0');
+    }, 400);
+    $('link[rel=prefetch], script[data-pjax-rm]').each(function () {
+      $(this).remove();
+    });
+    $('script[data-pjax], #pjax-reload script').each(function () {
+      $(this).parent().append($(this).remove());
+    });
+
+    if (Stun.utils.pjaxReloadBoot) {
+      Stun.utils.pjaxReloadBoot();
+    }
+    if (Stun.utils.pjaxReloadScroll) {
+      Stun.utils.pjaxReloadScroll();
+    }
+    if (Stun.utils.pjaxReloadSidebar) {
+      Stun.utils.pjaxReloadSidebar();
+    }
+    if (false) {
+      if (Stun.utils.pjaxReloadHeader) {
+        Stun.utils.pjaxReloadHeader();
+      }
+      if (Stun.utils.pjaxReloadScrollIcon) {
+        Stun.utils.pjaxReloadScrollIcon();
+      }
+      if (Stun.utils.pjaxReloadLocalSearch) {
+        Stun.utils.pjaxReloadLocalSearch();
+      }
+    }
+  }, false);
+}, false);</script><div id="pjax-reload"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css"><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.min.js"></script></div><script src="https://cdn.jsdelivr.net/npm/leancloud-storage@latest/dist/av-min.js"></script><script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script><script data-pjax="">function loadValine () {
+  var GUEST_INFO = ['nick', 'mail', 'link'];
+  var guest_info = 'nick,mail,link';
+
+  guest_info = guest_info.split(',').filter(function(item) {
+    return GUEST_INFO.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#valine-container',
+    appId: 'A2wTlqddyPxWcJKdOriqAlCO-gzGzoHsz',
+    appKey: 'k4mfRWX4hRuoZaQVYYmpbxok',
+    notify: true,
+    verify: false,
+    placeholder: '快来和我聊聊吧！\n昵称为必填项目\n虽然email不是必填，但是填了可以收到推送通知哦！',
+    avatar: 'mp',
+    meta: guest_info,
+    pageSize: '10' || 10,
+    visitor: false,
+    recordIP: false,
+    lang: '' || 'zh-cn',
+    path: window.location.pathname
+  });
+}
+
+if (true) {
+  loadValine();
+} else {
+  window.addEventListener('DOMContentLoaded', loadValine, false);
+}</script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script></body></html>

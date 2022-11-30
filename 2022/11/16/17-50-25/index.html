@@ -1,0 +1,198 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="format-detection" content="telephone=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="icon" href="/images/icons/favicon-16x16.png?v=2.6.2" type="image/png" sizes="16x16"><link rel="icon" href="/images/icons/favicon-32x32.png?v=2.6.2" type="image/png" sizes="32x32"><meta name="description" content="LLVM的入门导引">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLVM|LLVM入门的入门">
+<meta property="og:url" content="http://khmei.gitee.io/2022/11/16/17-50-25/index.html">
+<meta property="og:site_name" content="一千零一岁寒">
+<meta property="og:description" content="LLVM的入门导引">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/11/30/wzMOfhPG8V5Xetq.png">
+<meta property="og:image" content="https://s2.loli.net/2022/11/30/HLeRD2a7Un95vlC.png">
+<meta property="article:published_time" content="2022-11-16T09:50:25.000Z">
+<meta property="article:modified_time" content="2022-11-30T09:52:47.231Z">
+<meta property="article:author" content="Kehan Mei">
+<meta property="article:tag" content="llvm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/11/30/wzMOfhPG8V5Xetq.png"><title>LLVM|LLVM入门的入门 | 一千零一岁寒</title><link ref="canonical" href="http://khmei.gitee.io/2022/11/16/17-50-25/"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.1/css/all.min.css" type="text/css"><link rel="stylesheet" href="/css/index.css?v=2.6.2"><script>var Stun = window.Stun || {};
+var CONFIG = {
+  root: '/',
+  algolia: undefined,
+  assistSearch: undefined,
+  fontIcon: {"prompt":{"success":"fas fa-check-circle","info":"fas fa-arrow-circle-right","warning":"fas fa-exclamation-circle","error":"fas fa-times-circle"},"copyBtn":"fas fa-copy"},
+  sidebar: {"offsetTop":"20px","tocMaxDepth":6},
+  header: {"enable":true,"showOnPost":true,"scrollDownIcon":false},
+  postWidget: undefined,
+  nightMode: {"enable":true},
+  back2top: {"enable":true},
+  codeblock: {"style":"default","highlight":"light","wordWrap":true},
+  reward: false,
+  fancybox: false,
+  zoomImage: {"gapAside":"20px"},
+  galleryWaterfall: undefined,
+  lazyload: false,
+  pjax: {"avoidBanner":true},
+  externalLink: {"icon":{"enable":true,"name":"fas fa-external-link-alt"}},
+  shortcuts: undefined,
+  prompt: {"copyButton":"复制","copySuccess":"复制成功","copyError":"复制失败"},
+  sourcePath: {"js":"js","css":"css","images":"images"},
+};
+
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 6.1.0"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner"><nav class="header-nav header-nav--fixed"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav><div class="header-banner"><div class="header-banner-info"><div class="header-banner-info__title">一千零一岁寒</div><div class="header-banner-info__subtitle">万人如海一身藏</div></div></div></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content" id="content"><!-- Just used to judge whether it is an article page--><div id="is-post"></div><div class="post"><header class="post-header"><h1 class="post-title">LLVM|LLVM入门的入门</h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-11-16</span></span><span class="post-meta-item post-meta-item--wordcount"><span class="post-meta-item__icon"><i class="far fa-file-word"></i></span><span class="post-meta-item__info">字数统计</span><span class="post-meta-item__value">1.1k</span></span><span class="post-meta-item post-meta-item--readtime"><span class="post-meta-item__icon"><i class="far fa-clock"></i></span><span class="post-meta-item__info">阅读时长</span><span class="post-meta-item__value">6分</span></span></div></header><div class="post-body"><blockquote>
+<p><span class="exturl"><a class="exturl__link"   target="_blank" rel="noopener" href="https://llvm.org/docs/ProgrammersManual.html#introduction" >https://llvm.org/docs/ProgrammersManual.html#introduction</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+<p><span class="exturl"><a class="exturl__link"   target="_blank" rel="noopener" href="https://llvm.org/docs/LangRef.html" >https://llvm.org/docs/LangRef.html</a><span class="exturl__icon"><i class="fas fa-external-link-alt"></i></span></span></p>
+<p>2022年11月16日</p>
+<p>❤️</p>
+</blockquote>
+
+        <h2 id="0前言"   >
+          <a href="#0前言" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#0前言"></a> 0.前言</h2>
+      
+<p>对程序进行分析，不管是静态还是动态，都需要插桩。从LLVM入手插桩很方便，师兄花了很长时间研究，实验室只有他孤军奋战、苦苦求索，备受孤独与迷茫的双重煎熬。导师坦言担心他的精神状态。</p>
+<p>之后，师兄每周给我们开小灶，进行鞭挞😢</p>
+<p>之所以称为入门的入门，是因为我还没真正入门😄</p>
+<p>我还不能系统地写明LLVM的种种，本文只对其进行简要介绍，引导志同道合的朋友。同时，在前面的引用奉上官方文档，希望共同进步。</p>
+
+        <h2 id="1llvm简介"   >
+          <a href="#1llvm简介" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#1llvm简介"></a> 1.LLVM简介</h2>
+      
+<p>编译原理把编译过程分为前后端：</p>
+<ul>
+<li>前端把源代码翻译成中间表示（IR）</li>
+<li>后端把IR编译成目标平台的机器码。当然IR也可以直接给解释器解释执行。</li>
+</ul>
+<p>经典的编译器如<code>gcc</code>在设计上提供一条龙服务，即我们不需要知道它的IR是什么，它也不提供接口给我们来操作其IR。这种做法有好有坏。好处是从前端到后端，这些编译器的代码强耦合，可以在内部做任何想做的优化。坏处是，每当一个新平台出现，这些编译器都要各自为政实现一个从IR到新平台的后端。如果出现一种新语言，那么可能就需要实现一个新的编译器，重新设计一个新的IR。如果有M种新语言，N种新平台，那么最坏的情况下，需要实现M*N个前后端，比较低效。</p>
+<p>为此，我们希望有一种共用的IR，每当有一种新语言，就添加其到IR的前端，每当有一个新平台，就添加其到IR的后端。如果有M种新语言，N种新平台，最优情况下我们只需要实现M+N个前后端。</p>
+<p>LLVM就是这样一个项目。LLVM的核心设计了一个叫LLVM IR的中间表示，并以库的方式提供一系列接口，提供各种功能。</p>
+
+        <h2 id="2clang简介"   >
+          <a href="#2clang简介" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#2clang简介"></a> 2.Clang简介</h2>
+      
+<p>Clang是一个基于LLVM的编译器驱动，它提供把C/C++/OC等语言翻译成LLVM IR的前端，并使用LLVM的库实现LLVM IR到目标平台的后端。</p>
+<p>叫编译器驱动是因为使用<code>clang main.c -o main</code>（Clang兼容gcc语法）的时候，Clang帮我们“驱动”C语言预处理器，C语言前端，LLVM后端，链接器等等。其实GUN gcc也是编译器驱动。为了方便，我们习惯称为编译器。</p>
+<p>一般我读Clang为/see-lang/，但是其实很多人读/klang/，哈哈。</p>
+
+        <h2 id="3llvm-irintermediate-representation"   >
+          <a href="#3llvm-irintermediate-representation" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#3llvm-irintermediate-representation"></a> 3.LLVM IR(Intermediate Representation)</h2>
+      
+<p>LLVM的中间表⽰，本质上⼀种与源编程语⾔和⽬标机器架构⽆关的通用中间表⽰</p>
+<p>LLVM IR是⼀种类似于RISC的低级虚拟指令集</p>
+<p>LLVM是使⽤简单类型系统的强类型(例如， <code>i32</code>是⼀个32位整数， <code>i32*</code>是指向32位</p>
+<p>整数的指针)</p>
+<p>LLVM IR 不使用一组固定的命名寄存器,它使⽤⼀个名为%字符的无限临时集合</p>
+<p>LLVM IR代被设计成三种不同的形式：内存编译器IR，磁盘⼆进制<code>.bc</code> 表⽰(适合于即时编</p>
+<p>译器的快速加载)，可读的汇编语⾔<code>.ll</code></p>
+
+        <h3 id="31-ir结构"   >
+          <a href="#31-ir结构" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#31-ir结构"></a> 3.1 IR结构</h3>
+      
+<p>Module（模块）是⼀份LLVM IR的顶层容器，对应于编译前端的每个翻译单元（TranslationUnit）。每个模块由⽬标机器信息、全局符号（全局变量和函数）及元信息组成。</p>
+<p>Function（函数）就是编程语⾔中的函数，包括函数签名和若干个基本块，函数内的第⼀个基本块叫做入口基本块。</p>
+<p>BasicBlock（基本块）是⼀组顺序执⾏的指令集合，只有<strong>⼀个入口和⼀个出口</strong>，非头尾指令执行时不会违背顺序跳转到其他指令上去。每个基本块最后⼀条指令⼀般是跳转指令（跳转到其它基本块上去），函数内最后⼀个基本块的最后条指令是函数返回指令。</p>
+<p>Instruction（指令）是LLVM IR中的最小可执行单位，每⼀条指令都单占一行</p>
+<p>一个Module中可以有n个Function，Function内可以有n个BasicBlock，BasicBlock是单进单出的n条Instruction序列。</p>
+<img src="https://s2.loli.net/2022/11/30/wzMOfhPG8V5Xetq.png" style="zoom: 50%;" />
+
+        <h3 id="32-ir格式转换"   >
+          <a href="#32-ir格式转换" class="heading-link"><i class="fas fa-link"></i></a><a class="markdownIt-Anchor" href="#32-ir格式转换"></a> 3.2 IR格式转换</h3>
+      
+<p><img src="https://s2.loli.net/2022/11/30/HLeRD2a7Un95vlC.png" alt="" /></p>
+</div><footer class="post-footer"><div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link" href="http://khmei.gitee.io/tags/llvm/">llvm</a></span></div><nav class="post-paginator paginator"><div class="paginator-prev"><a class="paginator-prev__link" href="/2022/11/27/17-51-32/"><span class="paginator-prev__icon"><i class="fas fa-angle-left"></i></span><span class="paginator-prev__text">杂谈|人生的必经之路？</span></a></div><div class="paginator-next"><a class="paginator-next__link" href="/2022/11/11/21-44-45/"><span class="paginator-prev__text">AFL的安装与测试</span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div></nav></footer></div></div><div class="comments" id="comments"><div id="valine-container"></div></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span class="sidebar-nav-ov">站点概览</span></div><section class="sidebar-toc"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">
+           0.前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1llvm%E7%AE%80%E4%BB%8B"><span class="toc-number">2.</span> <span class="toc-text">
+           1.LLVM简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2clang%E7%AE%80%E4%BB%8B"><span class="toc-number">3.</span> <span class="toc-text">
+           2.Clang简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3llvm-irintermediate-representation"><span class="toc-number">4.</span> <span class="toc-text">
+           3.LLVM IR(Intermediate Representation)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#31-ir%E7%BB%93%E6%9E%84"><span class="toc-number">4.1.</span> <span class="toc-text">
+           3.1 IR结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#32-ir%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2"><span class="toc-number">4.2.</span> <span class="toc-text">
+           3.2 IR格式转换</span></a></li></ol></li></ol></section><!-- ov = overview--><section class="sidebar-ov hide"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/assets/4.jpg" alt="avatar"></div><p class="sidebar-ov-author__text">没空忧伤</p></div><div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="mkh20001101" target="_blank" rel="noopener" data-popover="微信" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-weixin"></i></span></a><a class="sidebar-ov-social-item" href="1574015012" target="_blank" rel="noopener" data-popover="QQ" data-popover-pos="up"><span class="sidebar-ov-social-item__icon"><i class="fab fa-qq"></i></span></a></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">13</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">6</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">11</div><div class="sidebar-ov-state-item__name">标签</div></a></div><div class="sidebar-ov-cc"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener" data-popover="知识共享许可协议" data-popover-pos="up"><img src="/images/cc-by-nc-sa.svg"></a></div></section><div class="sidebar-reading"><div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span class="sidebar-reading-info__num">0</span><span class="sidebar-reading-info__perc">%</span></div><div class="sidebar-reading-line"></div></div></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2022</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>Kehan Mei</span></div><div>万人如海一身藏</div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@latest/pjax.min.js"></script><script>window.addEventListener('DOMContentLoaded', function () {
+  var pjax = new Pjax({"selectors":["head title","#main",".pjax-reload"],"history":true,"scrollTo":false,"scrollRestoration":false,"cacheBust":false,"debug":false,"currentUrlFullReload":false,"timeout":0});
+  // 加载进度条的计时器
+  var loadingTimer = null;
+
+  // 重置页面 Y 方向上的滚动偏移量
+  document.addEventListener('pjax:send', function () {
+    $('.header-nav-menu').removeClass('show');
+    if (CONFIG.pjax && CONFIG.pjax.avoidBanner) {
+      $('html').velocity('scroll', {
+        duration: 500,
+        offset: $('#header').height(),
+        easing: 'easeInOutCubic'
+      });
+    }
+
+    var loadingBarWidth = 20;
+    var MAX_LOADING_WIDTH = 95;
+
+    $('.loading-bar').addClass('loading');
+    $('.loading-bar__progress').css('width', loadingBarWidth + '%');
+    clearInterval(loadingTimer);
+    loadingTimer = setInterval(function () {
+      loadingBarWidth += 3;
+      if (loadingBarWidth > MAX_LOADING_WIDTH) {
+        loadingBarWidth = MAX_LOADING_WIDTH;
+      }
+      $('.loading-bar__progress').css('width', loadingBarWidth + '%');
+    }, 500);
+  }, false);
+
+  window.addEventListener('pjax:complete', function () {
+    clearInterval(loadingTimer);
+    $('.loading-bar__progress').css('width', '100%');
+    $('.loading-bar').removeClass('loading');
+    setTimeout(function () {
+      $('.loading-bar__progress').css('width', '0');
+    }, 400);
+    $('link[rel=prefetch], script[data-pjax-rm]').each(function () {
+      $(this).remove();
+    });
+    $('script[data-pjax], #pjax-reload script').each(function () {
+      $(this).parent().append($(this).remove());
+    });
+
+    if (Stun.utils.pjaxReloadBoot) {
+      Stun.utils.pjaxReloadBoot();
+    }
+    if (Stun.utils.pjaxReloadScroll) {
+      Stun.utils.pjaxReloadScroll();
+    }
+    if (Stun.utils.pjaxReloadSidebar) {
+      Stun.utils.pjaxReloadSidebar();
+    }
+    if (false) {
+      if (Stun.utils.pjaxReloadHeader) {
+        Stun.utils.pjaxReloadHeader();
+      }
+      if (Stun.utils.pjaxReloadScrollIcon) {
+        Stun.utils.pjaxReloadScrollIcon();
+      }
+      if (Stun.utils.pjaxReloadLocalSearch) {
+        Stun.utils.pjaxReloadLocalSearch();
+      }
+    }
+  }, false);
+}, false);</script><div id="pjax-reload"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" rel="stylesheet" type="text/css"><link href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css"><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/copy-tex.min.js"></script></div><script src="https://cdn.jsdelivr.net/npm/leancloud-storage@latest/dist/av-min.js"></script><script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script><script data-pjax="">function loadValine () {
+  var GUEST_INFO = ['nick', 'mail', 'link'];
+  var guest_info = 'nick,mail,link';
+
+  guest_info = guest_info.split(',').filter(function(item) {
+    return GUEST_INFO.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#valine-container',
+    appId: 'A2wTlqddyPxWcJKdOriqAlCO-gzGzoHsz',
+    appKey: 'k4mfRWX4hRuoZaQVYYmpbxok',
+    notify: true,
+    verify: false,
+    placeholder: '快来和我聊聊吧！\n昵称为必填项目\n虽然email不是必填，但是填了可以收到推送通知哦！',
+    avatar: 'mp',
+    meta: guest_info,
+    pageSize: '10' || 10,
+    visitor: false,
+    recordIP: false,
+    lang: '' || 'zh-cn',
+    path: window.location.pathname
+  });
+}
+
+if (true) {
+  loadValine();
+} else {
+  window.addEventListener('DOMContentLoaded', loadValine, false);
+}</script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script></body></html>
