@@ -1,0 +1,238 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>安全属性|认证属性的层次结构 | 一千零一岁寒</title><meta name="author" content="Kehan Mei"><meta name="copyright" content="Kehan Mei"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="认证（authentication）就其基本形式而言，就是一个关于预期的通信对象存在与否的简单语句">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安全属性|认证属性的层次结构">
+<meta property="og:url" content="http://khmei.gitee.io/2023/06/16/15-59-39/index.html">
+<meta property="og:site_name" content="一千零一岁寒">
+<meta property="og:description" content="认证（authentication）就其基本形式而言，就是一个关于预期的通信对象存在与否的简单语句">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2022/12/03/1BtZQDNfAb7SUXO.jpg">
+<meta property="article:published_time" content="2023-06-16T07:59:39.000Z">
+<meta property="article:modified_time" content="2023-06-16T08:05:11.798Z">
+<meta property="article:author" content="Kehan Mei">
+<meta property="article:tag" content="形式化">
+<meta property="article:tag" content="安全属性">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/12/03/1BtZQDNfAb7SUXO.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://khmei.gitee.io/2023/06/16/15-59-39/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":500,"languages":{"author":"作者: Kehan Mei","link":"链接: ","source":"来源: 一千零一岁寒","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'null',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '安全属性|认证属性的层次结构',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-06-16 16:05:11'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/c/font_3803202_72428l4y30t.css"><link rel="stylesheet" href="/css/styles.css"><script src="https://npm.elemecdn.com/echarts@4.9.0/dist/echarts.min.js"></script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/4.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group hide" href="javascript:void(0);"><i class="fa-fw fas fa-user"></i><span> 我的</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/fav/"><i class="fa-fw fas fa-star"></i><span> 收藏夹</span></a></li><li><a class="site-page child" href="/bangumis/"><i class="fa-fw fa-brands fa-bilibili"></i><span> 追番</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">一千零一岁寒</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group hide" href="javascript:void(0);"><i class="fa-fw fas fa-user"></i><span> 我的</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/fav/"><i class="fa-fw fas fa-star"></i><span> 收藏夹</span></a></li><li><a class="site-page child" href="/bangumis/"><i class="fa-fw fa-brands fa-bilibili"></i><span> 追番</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><center id="name-container"><a id="page-name" href="javascript:scrollToTop()">PAGE_NAME</a></center></div><div id="nav-right"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i></a></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">安全属性|认证属性的层次结构</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2023-06-16T07:59:39.000Z" title="发表于 2023-06-16 15:59:39">2023-06-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A7%91%E7%A0%94/">科研</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A7%91%E7%A0%94/%E5%BD%A2%E5%BC%8F%E5%8C%96/">形式化</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">957</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
+<p>Gavin Lowe, 1997</p>
+</blockquote>
+<p>以下四个认证属性（authentication），逐渐变强。</p>
+<h2 id="存活性（Aliveness）">存活性（Aliveness）</h2>
+<p>发起者A认为与B完成了一轮协议会话，并且认为B为响应者，如果B<strong>确实曾经执行过该协议</strong>，则称协议对发起者A提供B的存活性认证，在满足存活性的情况下，</p>
+<ul>
+<li>不要求B是与A执行的该协议**（对象不要求）**</li>
+<li>并且也不要求B是最近执行的改协议，只要B<strong>曾经</strong>参与过协议执行即可**（时间不要求）**</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">∀a b i. Claim_commit(a, b, &lt;&gt; )@i</span><br><span class="line">`	⇒ (∃j id.Create_B(b, id)@j ∨ Create_A(b, id)@j)</span><br><span class="line">	∨(∃X r.Rev(X)@r ∧ Honest(X)@i)</span><br></pre></td></tr></table></figure>
+<p>存活性的要求最低，但是也有失效的可能，比如受到**反射攻击（reflection attack）**时。如下图这个协议，可能B会不参与协议：</p>
+<img src="https://s2.loli.net/2023/06/12/MvfSmyLVcoQaBKP.png" alt="image-20230612170414022" style="zoom: 60%;" />
+<p>Tamarin验证如下：</p>
+<p><img src="https://s2.loli.net/2023/06/12/3XSLQtxJkUbagfP.png" alt="image-20230612173207694"></p>
+<h2 id="弱一致性（Weak-agreement）">弱一致性（Weak agreement）</h2>
+<p>发起者A 认为与B完成一轮协议会话，并且认为B为响应者，如果B<strong>确实曾与A执行过该协议</strong>，则称协议发起者A提供B的弱一致性，满足弱一致性时，</p>
+<ul>
+<li>B与A执行过该协议，但是不一定作为响应者**（对象半要求）**</li>
+<li><strong>（时间不要求）</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">∀a b i. Claim_commit(a, b, &lt;&gt; )@i</span><br><span class="line">	⇒ (∃j.Claim_running(b, a, &lt;&gt; )@j)</span><br><span class="line">	∨(∃X r.Rev(X)@r ∧ Honest(X)@i)</span><br></pre></td></tr></table></figure>
+<p>a,b交流过，但是不要求它们扮演正确的角色</p>
+<p>下图<strong>存活性成立，弱一致性不成立</strong>。攻击者可以修改第一条消息中未受保护的标识符A，换成C，导致B认为自己在与A通信。</p>
+<img src="https://s2.loli.net/2023/06/12/dI5egokXNtiQ2Ac.png" alt="image-20230612163837722" style="zoom: 80%;" />
+<p>Tamarin验证如下：</p>
+<p><img src="https://s2.loli.net/2023/06/12/C7ls4UdOqDkHTfF.png" alt="image-20230612164054692"></p>
+<h2 id="非单射一致性-No-injective-agreement">非单射一致性 (No-injective agreement)</h2>
+<p>发起者A认为与响应者B完成了一轮协议会话，如果B确实作为响应者曾与A执行过该协议，并且两个主体对变量集ds中的所有变量的值<strong>都是统一认可的</strong>，则称协议发起者A提供B在变量集ds上的非单射一致性。</p>
+<p>那么满足非单射一致性的协议中，发起者A的协议轮和响应者B的协议轮<strong>不要求一一对应</strong>，有可能A发起了两次会话，但是B只运行了一次，另一次由攻击者重放第一轮会话冒充B完成，也有可能A只发送了一次会话，但攻击者重放第一轮会话冒充A， 让B运行两次，另外，有些协议不满足非单射一致性是因为攻击者成功误导两个参与主体，使得两个主体在协议运行结束后，变量集ds中的某些变量的值不同。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">∀a b t i. Claim_commit(a, b, &lt;A, B,t&gt; )@i</span><br><span class="line">	⇒ (∃j.Claim_running(b, a, &lt;A, B,t&gt; )@j)</span><br><span class="line">	∨(∃X r.Rev(X)@r ∧ Honest(X)@i)</span><br></pre></td></tr></table></figure>
+<h2 id="单射一致性-Injective-agreement">单射一致性(Injective agreement)</h2>
+<p>发起者A认为与响应者B完成了一轮协议的会话，如果B确实作为响应者曾与A执行过该协议，并且两个主体对变量集ds中的所有变量的值<strong>都是统一认可的</strong>，并且A的每一轮会话都是唯一对应B的一轮会话，则称协议对发起者A提供B在变量集ds上的单射一致性。也称作强一致性，在电子商务相关的协议中A和B的协议之间的一一对应的关系非常的重要的。</p>
+<p>所以说上面的区别主要就是在发起者A有没有存在<strong>唯一对应的应答</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">∀a b t i. Claim_commit(a, b, &lt;A, B,t&gt; )@i</span><br><span class="line">	⇒ (∃j.Claim_running(b, a, &lt;A, B,t&gt; )@j ∧ j &lt; i</span><br><span class="line">	∧¬(∃a2b2i2.Claim_commit(a2, b2, &lt;A, B,t&gt; )@i2</span><br><span class="line">	∧¬(i2 = i)))</span><br><span class="line">	∨(∃X r.Rev(X)@r ∧ Honest(X)@i)</span><br></pre></td></tr></table></figure>
+<p>下图满足非单射一致性，不满足单射一致性，攻击者可以重放消息。</p>
+<img src="https://s2.loli.net/2023/06/12/62FsKjoBtufbCSV.png" alt="image-20230612161442742" style="zoom:67%;" />
+<p>Tamarin验证如下：</p>
+<p><img src="https://s2.loli.net/2023/06/12/qoRvf4ZjAI1M3Bm.png" alt="image-20230612162152502"></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%BD%A2%E5%BC%8F%E5%8C%96/">形式化</a><a class="post-meta__tags" href="/tags/%E5%AE%89%E5%85%A8%E5%B1%9E%E6%80%A7/">安全属性</a></div><div class="post_share"><div class="addthis_inline_share_toolbox"></div><script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-63885facce4abba" async="async"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/06/16/16-05-38/"><img class="prev-cover" src="https://s2.loli.net/2022/12/03/i9MoEfmIYRVz81B.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">安全属性|密钥相关属性</div></div></a></div><div class="next-post pull-right"><a href="/2023/05/06/15-05-17/"><img class="next-cover" src="https://s2.loli.net/2023/05/06/T4fuJGaVHc6b7BO.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">vlog|夜爬华山</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/06/16/16-05-38/" title="安全属性|密钥相关属性"><img class="cover" src="https://s2.loli.net/2022/12/03/i9MoEfmIYRVz81B.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-06-16</div><div class="title">安全属性|密钥相关属性</div></div></a></div><div><a href="/2023/03/22/18-15-25/" title="形式化3|分离逻辑"><img class="cover" src="https://s2.loli.net/2022/12/03/i9MoEfmIYRVz81B.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-22</div><div class="title">形式化3|分离逻辑</div></div></a></div><div><a href="/2023/03/22/18-02-23/" title="形式化2|霍尔逻辑"><img class="cover" src="https://s2.loli.net/2022/12/03/CaqHYFr2x54Gnu8.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-22</div><div class="title">形式化2|霍尔逻辑</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/4.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Kehan Mei</div><div class="author-info__description">没空忧伤</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><div class="card-info-social-icons is-center"><a class="social-icon" href="mailto:1574015012@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=1574015012&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E6%B4%BB%E6%80%A7%EF%BC%88Aliveness%EF%BC%89"><span class="toc-text">存活性（Aliveness）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%B1%E4%B8%80%E8%87%B4%E6%80%A7%EF%BC%88Weak-agreement%EF%BC%89"><span class="toc-text">弱一致性（Weak agreement）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%9E%E5%8D%95%E5%B0%84%E4%B8%80%E8%87%B4%E6%80%A7-No-injective-agreement"><span class="toc-text">非单射一致性 (No-injective agreement)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E5%B0%84%E4%B8%80%E8%87%B4%E6%80%A7-Injective-agreement"><span class="toc-text">单射一致性(Injective agreement)</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/16/16-05-38/" title="安全属性|密钥相关属性">安全属性|密钥相关属性</a><time datetime="2023-06-16T08:05:38.000Z" title="发表于 2023-06-16 16:05:38">2023-06-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/16/15-59-39/" title="安全属性|认证属性的层次结构">安全属性|认证属性的层次结构</a><time datetime="2023-06-16T07:59:39.000Z" title="发表于 2023-06-16 15:59:39">2023-06-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/06/15-05-17/" title="vlog|夜爬华山">vlog|夜爬华山</a><time datetime="2023-05-06T07:05:17.000Z" title="发表于 2023-05-06 15:05:17">2023-05-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/03/22/18-15-25/" title="形式化3|分离逻辑">形式化3|分离逻辑</a><time datetime="2023-03-22T10:15:25.000Z" title="发表于 2023-03-22 18:15:25">2023-03-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/03/22/18-02-23/" title="形式化2|霍尔逻辑">形式化2|霍尔逻辑</a><time datetime="2023-03-22T10:02:23.000Z" title="发表于 2023-03-22 18:02:23">2023-03-22</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/5.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Kehan Mei</div><div class="footer_custom_text">I love you. No one told me why.</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+      Array.from($mermaidWrap).forEach((item, index) => {
+        const mermaidSrc = item.firstElementChild
+        const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+        const mermaidID = 'mermaid-' + index
+        const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+        mermaid.mermaidAPI.render(mermaidID, mermaidDefinition, (svgCode) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        })
+      })
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'A2wTlqddyPxWcJKdOriqAlCO-gzGzoHsz',
+      appKey: 'k4mfRWX4hRuoZaQVYYmpbxok',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, {"placeholder":"建议使用QQ邮箱，评论头像采用QQ头像","enableQQ":true}))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script type="text/javascript" src="https://unpkg.zhimg.com/jquery@latest/dist/jquery.min.js"></script><script type="text/javascript" src="/js/nav.js"></script><script async src="/js/title.js"></script></div></body></html>
